@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Products;
 
 class HomeController extends Controller
 {
@@ -22,7 +23,26 @@ class HomeController extends Controller
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function index()
-    {
-        return view('home');
+    {   
+        $product = Products::latest()->get();
+        return datatables()->of($product)->make(true);
+    }
+
+    public function home(){
+        return view('home');    
+    }
+    
+    public function create(){
+        return view('create');
+    }
+
+    public function store(Request $request){
+        $localStudent = new Products();
+        $localStudent->product_name = $request->product_name;
+        $localStudent->price = $request->price;
+        $localStudent->quantity = $request->quantity;
+        $localStudent->save();
+
+        return redirect()->route('home');
     }
 }
